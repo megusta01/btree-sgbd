@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "App.Main",
+            "projectName": "btree-sgbd_5d66f002"
+        },
+        {
+            "type": "java",
+            "name": "Executar Main",
+            "request": "launch",
+            "mainClass": "main.Main",
+            "classPaths": [
+                "bin"
+            ]
+        }
+    ]
+  }
+  
