@@ -20,18 +20,23 @@ public class BTreeNode {
     public void traverse() {
         int i;
         for (i = 0; i < this.numKeys; i++) {
-            // Se não for folha, percorre o sub-árvore antes de imprimir a chave
+            // Se não for folha, percorre a sub-árvore antes de imprimir a chave
             if (!this.isLeaf) {
-                children[i].traverse();
+                if (this.children[i] != null) {
+                    children[i].traverse();
+                }
             }
             System.out.print(" " + keys[i]);
         }
-
+    
         // Imprime a sub-árvore após a última chave
         if (!this.isLeaf) {
-            children[i].traverse();
+            if (this.children[i] != null) {
+                children[i].traverse();
+            }
         }
     }
+    
 
     // Função para buscar uma chave neste nó
     public BTreeNode search(int key) {
@@ -57,7 +62,7 @@ public class BTreeNode {
     // Função para inserir uma nova chave neste nó. O nó deve ter espaço para a nova chave
     public void insertNonFull(int key) {
         int i = numKeys - 1;
-
+    
         // Se este é um nó folha
         if (isLeaf) {
             // Encontra a localização da nova chave e move todas as chaves maiores para uma posição à frente
@@ -65,21 +70,26 @@ public class BTreeNode {
                 keys[i + 1] = keys[i];
                 i--;
             }
-
+    
             // Insere a nova chave
             keys[i + 1] = key;
             numKeys = numKeys + 1;
         } else {  // Se este nó não for folha
-            // Encontra a criança que receberá a nova chave
+            // Encontra o filho que receberá a nova chave
             while (i >= 0 && keys[i] > key) {
                 i--;
             }
-
-            // Verifica se a criança encontrada está cheia
+    
+            // Verifica se o filho encontrado está cheio
+            if (children[i + 1] == null) {
+                // Inicializa o filho se ele for nulo
+                children[i + 1] = new BTreeNode(t, true);
+            }
+    
             if (children[i + 1].numKeys == 2 * t - 1) {
-                // Se a criança estiver cheia, divida-a
+                // Se o filho estiver cheio, divida-o
                 splitChild(i + 1, children[i + 1]);
-
+    
                 // Após a divisão, a chave do meio sobe para este nó e pode haver a necessidade de mover a nova chave para uma das duas crianças
                 if (keys[i + 1] < key) {
                     i++;
