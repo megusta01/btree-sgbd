@@ -133,7 +133,7 @@ public class DatabaseController {
         long startTime = System.nanoTime();
 
         for (int i = 0; i < numberOfRecords; i++) {
-            int key = random.nextInt(1000); // Gera números entre 0 e 999
+            int key = random.nextInt(5000); // Gera números entre 0 e 999
             bTree.insert(key);
             insertedKeys.add(key);
         }

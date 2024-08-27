@@ -38,10 +38,10 @@ public class DataGenerator {
     public void generateUnlimitedRecords(DatabaseController dbController) {
         int count = 0;
         while (true) {
-            int key = random.nextInt(1000); // Gera números entre 0 e 999
+            int key = random.nextInt(5000); // Gera números entre 0 e 999
             dbController.createRecord(key);
             count++;
-            if (count % 1000 == 0) {
+            if (count % 5000 == 0) {
                 System.out.println(count + " registros gerados.");
                 dbController.saveToFile("dados_incrementais.bin"); // Salvamento periódico
             }
