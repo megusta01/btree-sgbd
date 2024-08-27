@@ -24,7 +24,7 @@ public class Main {
 
                 int option = scanner.nextInt();
                 switch (option) {
-                    case 1: // Inserir registro manualmente
+                    case 1: // Inserir registro
                         System.out.print("Digite a chave a ser inserida: ");
                         int insertKey = scanner.nextInt();
                         dbController.createRecord(insertKey);
@@ -52,7 +52,8 @@ public class Main {
                     case 6: // Gerar registros automaticamente
                         System.out.print("Digite o número de registros a serem gerados: ");
                         int numberOfRecords = scanner.nextInt();
-                        dbController.generateRecordsAutomatically(numberOfRecords); // Gera e insere registros automaticamente
+                        dbController.generateRecordsAutomatically(numberOfRecords); // Gera e insere registros
+                                                                                    // automaticamente
                         System.out.println("Registros gerados automaticamente.");
                         break;
                     case 7: // Salvar dados em arquivo

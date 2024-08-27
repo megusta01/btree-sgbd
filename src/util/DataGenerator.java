@@ -14,7 +14,7 @@ public class DataGenerator {
         this.random = new Random();
     }
 
-    // Função para gerar um conjunto de chaves únicas usando um intervalo muito grande
+    // Método para gerar um conjunto de chaves únicas usando um intervalo muito grande
     public Set<Integer> generateUniqueKeys(int numberOfRecords, int min, int max) {
         Set<Integer> keys = new HashSet<>();
         while (keys.size() < numberOfRecords) {
@@ -24,7 +24,7 @@ public class DataGenerator {
         return keys;
     }
 
-    // Função para gerar UUIDs como chaves
+    // Método para gerar UUIDs como chaves
     public Set<Integer> generateUniqueUUIDs(int numberOfRecords) {
         Set<Integer> keys = new HashSet<>();
         while (keys.size() < numberOfRecords) {
@@ -34,7 +34,7 @@ public class DataGenerator {
         return keys;
     }
 
-    // Função para gerar chaves de forma ilimitada, salvando periodicamente
+    // Método para gerar chaves de forma ilimitada, salvando periodicamente
     public void generateUnlimitedRecords(DatabaseController dbController) {
         int count = 0;
         while (true) {

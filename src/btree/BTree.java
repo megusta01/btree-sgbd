@@ -14,7 +14,7 @@ public class BTree implements Serializable {
         this.t = t;
     }
 
-    // Função para inserir uma nova chave na árvore
+    // Método para inserir uma nova chave na árvore
     public void insert(int key) {
         if (root == null) {
             root = new BTreeNode(t, true);
@@ -34,7 +34,7 @@ public class BTree implements Serializable {
         }
     }
 
-    // Função para remover uma chave da árvore
+    // Método para remover uma chave da árvore
     public void remove(int key) {
         if (root == null) {
             System.out.println("A árvore está vazia");
@@ -50,12 +50,12 @@ public class BTree implements Serializable {
         }
     }
 
-    // Função para buscar uma chave na árvore
+    // Método para buscar uma chave na árvore
     public BTreeNode search(int key) {
         return (root == null) ? null : root.search(key);
     }
 
-    // Função para exibir a árvore B por níveis
+    // Método para exibir a árvore B por níveis
     public void printTreeByLevels() {
         if (root == null) {
             System.out.println("Árvore está vazia.");
