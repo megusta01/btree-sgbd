@@ -119,11 +119,6 @@ public class DatabaseController {
             System.out.println("Registro não encontrado. Tempo de execução = " + df.format(durationInMs) + " ms");
         }
     }
-
-    // Função para exibir a árvore B por níveis
-    public void displayTreeByLevels() {
-        bTree.printTreeByLevels();
-    }
     
     // Função para exibir todos os registros
     public void displayRecords() {
