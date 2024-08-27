@@ -17,9 +17,8 @@ public class Main {
                 System.out.println("4. Remover registro");
                 System.out.println("5. Exibir todos os registros");
                 System.out.println("6. Gerar registros automaticamente");
-                System.out.println("7. Exibir estrutura da árvore por níveis");
-                System.out.println("8. Salvar dados em arquivo");
-                System.out.println("9. Carregar dados de arquivo");
+                System.out.println("7. Salvar dados em arquivo");
+                System.out.println("8. Carregar dados de arquivo");
                 System.out.println("0. Sair");
                 System.out.print("Escolha uma opção: ");
 
@@ -56,15 +55,12 @@ public class Main {
                         dbController.generateRecordsAutomatically(numberOfRecords); // Gera e insere registros automaticamente
                         System.out.println("Registros gerados automaticamente.");
                         break;
-                    case 7: // Exibir estrutura da árvore por níveis
-                        dbController.displayTreeByLevels();
-                        break;
-                    case 8: // Salvar dados em arquivo
+                    case 7: // Salvar dados em arquivo
                         System.out.print("Digite o nome do arquivo para salvar os dados: ");
                         String saveFilename = scanner.next();
                         dbController.saveToFile(saveFilename);
                         break;
-                    case 9: // Carregar dados de arquivo
+                    case 8: // Carregar dados de arquivo
                         System.out.print("Digite o nome do arquivo para carregar os dados: ");
                         String loadFilename = scanner.next();
                         dbController.loadFromFile(loadFilename);
