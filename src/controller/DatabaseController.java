@@ -3,60 +3,132 @@ package controller;
 import btree.BTree;
 import btree.BTreeNode;
 
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
 public class DatabaseController {
     private BTree bTree;
+    private int insertCount = 0; // Contador de inserções
+    private Set<Integer> insertedKeys; // Conjunto para rastrear chaves inseridas
 
-    // Construtor - inicializa a árvore B com o grau mínimo t
+    // Formatação para milissegundos com 4 casas decimais
+    private static final DecimalFormat df = new DecimalFormat("0.0000");
+
     public DatabaseController(int t) {
         this.bTree = new BTree(t);
+        this.insertedKeys = new HashSet<>();
+    }
+
+    // Função para salvar a árvore em um arquivo
+    public void saveToFile(String filename) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(bTree);
+            System.out.println("Dados salvos com sucesso.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Função para carregar a árvore de um arquivo
+    public void loadFromFile(String filename) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            bTree = (BTree) ois.readObject();
+            System.out.println("Dados carregados com sucesso.");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     // Função para inserir um novo registro no banco de dados
     public void createRecord(int key) {
-        System.out.println("Inserindo registro com chave: " + key);
+        if (insertedKeys.contains(key)) {
+            System.out.println("Chave duplicada detectada: " + key);
+            return; // Ignora chaves duplicadas
+        }
+
+        long startTime = System.nanoTime();
         bTree.insert(key);
+        long endTime = System.nanoTime();
+
+        double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+        insertedKeys.add(key); // Adiciona a chave ao conjunto de chaves inseridas
+        System.out.println("Registro inserido: Chave = " + key + ", Tempo de execução = " + df.format(durationInMs) + " ms");
+        
+        // Incrementa o contador de inserções
+        insertCount++;
+        // Salva os dados periodicamente (a cada 1000 inserções)
+        if (insertCount % 1000 == 0) {
+            saveToFile("dados_incrementais.bin");
+            System.out.println("Salvamento automático realizado após " + insertCount + " inserções.");
+        }
     }
 
     // Função para buscar um registro no banco de dados
     public String readRecord(int key) {
+        long startTime = System.nanoTime();
         BTreeNode result = bTree.search(key);
-        if (result != null) {
-            return "Registro encontrado com a chave: " + key;
-        } else {
-            return "Registro não encontrado com a chave: " + key;
-        }
+        long endTime = System.nanoTime();
+        double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+        return result != null ? 
+            "Registro encontrado. Tempo de execução = " + df.format(durationInMs) + " ms" : 
+            "Registro não encontrado. Tempo de execução = " + df.format(durationInMs) + " ms";
     }
 
     // Função para atualizar um registro existente
-    // Para simplificação, esse método remove o registro antigo e insere um novo
     public void updateRecord(int oldKey, int newKey) {
-        System.out.println("Atualizando registro com chave: " + oldKey + " para nova chave: " + newKey);
+        long startTime = System.nanoTime();
         BTreeNode result = bTree.search(oldKey);
         if (result != null) {
             bTree.remove(oldKey);
             bTree.insert(newKey);
-            System.out.println("Registro atualizado com sucesso!");
+            insertedKeys.remove(oldKey);
+            insertedKeys.add(newKey);
+            long endTime = System.nanoTime();
+            double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+            System.out.println("Registro atualizado: Chave antiga = " + oldKey + ", Nova chave = " + newKey + ", Tempo de execução = " + df.format(durationInMs) + " ms");
         } else {
-            System.out.println("Registro não encontrado com a chave: " + oldKey);
+            long endTime = System.nanoTime();
+            double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+            System.out.println("Registro não encontrado. Tempo de execução = " + df.format(durationInMs) + " ms");
         }
     }
 
     // Função para remover um registro do banco de dados
     public void deleteRecord(int key) {
-        System.out.println("Removendo registro com chave: " + key);
+        long startTime = System.nanoTime();
         BTreeNode result = bTree.search(key);
         if (result != null) {
             bTree.remove(key);
-            System.out.println("Registro removido com sucesso!");
+            insertedKeys.remove(key);
+            long endTime = System.nanoTime();
+            double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+            System.out.println("Registro removido: Chave = " + key + ", Tempo de execução = " + df.format(durationInMs) + " ms");
         } else {
-            System.out.println("Registro não encontrado com a chave: " + key);
+            long endTime = System.nanoTime();
+            double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+            System.out.println("Registro não encontrado. Tempo de execução = " + df.format(durationInMs) + " ms");
         }
     }
 
-    // Função para percorrer a árvore e exibir todos os registros (para fins de depuração)
+    // Função para exibir a árvore B por níveis
+    public void displayTreeByLevels() {
+        bTree.printTreeByLevels();
+    }
+    
+    // Função para exibir todos os registros
     public void displayRecords() {
-        System.out.println("Exibindo todos os registros:");
-        bTree.traverse();
-        System.out.println();
+        bTree.printTreeByLevels();
+    }
+
+    // Função para gerar registros automaticamente
+    public void generateRecordsAutomatically(int numberOfRecords) {
+        Random random = new Random();
+        for (int i = 0; i < numberOfRecords; i++) {
+            int key = random.nextInt(1000); // Gera números entre 0 e 999
+            createRecord(key);
+        }
     }
 }
