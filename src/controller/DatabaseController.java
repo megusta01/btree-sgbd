@@ -24,9 +24,15 @@ public class DatabaseController {
 
     // Função para salvar a árvore em um arquivo
     public void saveToFile(String filename) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+        File directory = new File("files");
+        if (!directory.exists()) {
+            directory.mkdir(); // Cria a pasta "files" se ela não existir
+        }
+        
+        File file = new File(directory, filename);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(bTree);
-            System.out.println("Dados salvos com sucesso.");
+            System.out.println("Dados salvos com sucesso em " + file.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,9 +40,10 @@ public class DatabaseController {
 
     // Função para carregar a árvore de um arquivo
     public void loadFromFile(String filename) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+        File file = new File("files", filename);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             bTree = (BTree) ois.readObject();
-            System.out.println("Dados carregados com sucesso.");
+            System.out.println("Dados carregados com sucesso de " + file.getPath());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -126,9 +133,18 @@ public class DatabaseController {
     // Função para gerar registros automaticamente
     public void generateRecordsAutomatically(int numberOfRecords) {
         Random random = new Random();
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < numberOfRecords; i++) {
             int key = random.nextInt(1000); // Gera números entre 0 e 999
-            createRecord(key);
+            bTree.insert(key);
+            insertedKeys.add(key);
         }
+
+        long endTime = System.nanoTime();
+        double durationInMs = (endTime - startTime) / 1_000_000.0; // Converte para milissegundos
+        System.out.println(numberOfRecords + " registros inseridos. Tempo de execução: " + df.format(durationInMs) + " ms");
+        
+        // Não há salvamento automático; os dados serão salvos apenas quando o usuário chamar saveToFile.
     }
 }
