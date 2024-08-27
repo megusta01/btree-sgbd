@@ -3,43 +3,48 @@ package util;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
+
+import controller.DatabaseController;
 
 public class DataGenerator {
     private Random random;
 
-    // Construtor
     public DataGenerator() {
         this.random = new Random();
     }
 
-    // Função para gerar um conjunto de dados aleatórios com chaves únicas
+    // Função para gerar um conjunto de chaves únicas usando um intervalo muito grande
     public Set<Integer> generateUniqueKeys(int numberOfRecords, int min, int max) {
         Set<Integer> keys = new HashSet<>();
-
-        // Garante que as chaves são únicas
         while (keys.size() < numberOfRecords) {
             int key = random.nextInt(max - min + 1) + min;
             keys.add(key);
         }
-
         return keys;
     }
 
-    // Função para gerar um único valor aleatório para simular dados associados a uma chave
-    public String generateRandomValue() {
-        // Gera um valor aleatório entre 1000 e 9999 (exemplo simples)
-        int value = random.nextInt(9000) + 1000;
-        return "Value-" + value;
+    // Função para gerar UUIDs como chaves
+    public Set<Integer> generateUniqueUUIDs(int numberOfRecords) {
+        Set<Integer> keys = new HashSet<>();
+        while (keys.size() < numberOfRecords) {
+            String uuid = UUID.randomUUID().toString();
+            keys.add(uuid.hashCode());
+        }
+        return keys;
     }
 
-    // Função para gerar um conjunto de valores aleatórios para simular dados associados às chaves
-    public String[] generateRandomValues(int numberOfRecords) {
-        String[] values = new String[numberOfRecords];
-
-        for (int i = 0; i < numberOfRecords; i++) {
-            values[i] = generateRandomValue();
+    // Função para gerar chaves de forma ilimitada, salvando periodicamente
+    public void generateUnlimitedRecords(DatabaseController dbController) {
+        int count = 0;
+        while (true) {
+            int key = random.nextInt(1000); // Gera números entre 0 e 999
+            dbController.createRecord(key);
+            count++;
+            if (count % 1000 == 0) {
+                System.out.println(count + " registros gerados.");
+                dbController.saveToFile("dados_incrementais.bin"); // Salvamento periódico
+            }
         }
-
-        return values;
     }
 }
