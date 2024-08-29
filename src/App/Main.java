@@ -22,6 +22,7 @@ public class Main {
                 System.out.println("7. Salvar dados em arquivo");
                 System.out.println("8. Gerar registros automaticamente");
                 System.out.println("9. Remover registros automaticamente");
+                System.out.println("10. Atualizar registros automaticamente");
                 System.out.println("0. Sair");
                 System.out.print("Escolha uma opção: ");
 
@@ -117,6 +118,13 @@ public class Main {
                         int numberOfRecordsToRemove = scanner.nextInt();
                         dbController.removeRandomRecordsFromFile(removeFilename, numberOfRecordsToRemove);
                         break;
+                    case 10: // Atualizar registros aleatórios de um arquivo
+                    System.out.print("Digite o nome do arquivo para atualizar os registros: ");
+                    String updateFilename = scanner.next();
+                    System.out.print("Digite o número de registros a serem atualizados aleatoriamente: ");
+                    int numberOfRecordsToUpdate = scanner.nextInt();
+                    dbController.updateRandomRecordsFromFile(updateFilename, numberOfRecordsToUpdate);
+                    break;
                     case 0: // Sair
                         System.out.println("Saindo...");
                         System.exit(0);

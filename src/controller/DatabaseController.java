@@ -191,5 +191,66 @@ public class DatabaseController {
     }
 }
 
+public void updateRandomRecordsFromFile(String filename, int numberOfRecordsToUpdate) {
+    File file = new File("files", filename);
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        BTree loadedTree = (BTree) ois.readObject();
+        List<Integer> allKeys = loadedTree.getAllKeys();
+
+        if (allKeys.size() < numberOfRecordsToUpdate) {
+            System.out.println("O arquivo contém menos registros do que o número solicitado para atualização.");
+            return;
+        }
+
+        // Embaralhar as chaves para selecionar aleatoriamente
+        Collections.shuffle(allKeys);
+        List<Integer> keysToUpdate = allKeys.subList(0, numberOfRecordsToUpdate);
+
+        // Medição de memória e tempo antes da atualização
+        long memoryBeforeUpdate = MemoryUtil.measureMemoryInKB();
+        long startTime = System.nanoTime();
+
+        // Atualizar as chaves selecionadas
+        for (int oldKey : keysToUpdate) {
+            int newKey = generateNewKey(oldKey); // Método para gerar uma nova chave
+            loadedTree.remove(oldKey);
+            loadedTree.insert(newKey);
+            insertedKeys.remove(oldKey);
+            insertedKeys.add(newKey);
+        }
+
+        // Medição de memória e tempo após a atualização
+        long endTime = System.nanoTime();
+        long memoryAfterUpdate = MemoryUtil.measureMemoryInKB();
+        double durationInMs = (endTime - startTime) / 1_000_000.0;
+
+        // Salva a árvore B de volta para o arquivo após a atualização
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(loadedTree);
+            System.out.println(numberOfRecordsToUpdate + " registros atualizados aleatoriamente no arquivo " + file.getPath());
+        }
+
+        // Exibir informações de desempenho
+        System.out.println("Memória antes da atualização: " + memoryBeforeUpdate + " KB");
+        System.out.println("Memória após a atualização: " + memoryAfterUpdate + " KB");
+        System.out.println("Consumo de memória durante a atualização: " + (memoryAfterUpdate - memoryBeforeUpdate) + " KB");
+        System.out.println("Tempo de execução da atualização: " + durationInMs + " ms");
+
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+
+// Método auxiliar para gerar uma nova chave (garantir que não exista duplicata)
+private int generateNewKey(int oldKey) {
+    Random random = new Random();
+    int newKey;
+    do {
+        newKey = random.nextInt(5000); // ou outro intervalo adequado
+    } while (insertedKeys.contains(newKey)); // Garante que a nova chave não seja duplicada
+    return newKey;
+}
+
+
 
 }
