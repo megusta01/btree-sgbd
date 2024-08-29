@@ -23,9 +23,9 @@ public class Main {
                 System.out.println("7. Salvar dados em um arquivo");
                 System.out.println("8. Gerar registros antes de salvar o arquivo");
                 System.out.println("*********************************");
-                System.out.println("9. Remover registros automaticamente");
+                System.out.println("9. Inserir registros automaticamente");
                 System.out.println("10. Atualizar registros automaticamente");
-                System.out.println("11. Inserir registros automaticamente");
+                System.out.println("11. Remover registros automaticamente");
                 System.out.println("*********************************");
                 System.out.println("0. Sair");
                 System.out.println("*********************************");
