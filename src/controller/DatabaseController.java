@@ -2,10 +2,13 @@ package controller;
 
 import btree.BTree;
 import btree.BTreeNode;
+import util.MemoryUtil;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -143,4 +146,50 @@ public class DatabaseController {
         System.out.println(
                 numberOfRecords + " registros inseridos. Tempo de execução: " + df.format(durationInMs) + " ms");
     }
+
+    // Método para remover registros aleatórios de um arquivo
+
+    public void removeRandomRecordsFromFile(String filename, int numberOfRecordsToRemove) {
+    File file = new File("files", filename);
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        BTree loadedTree = (BTree) ois.readObject();
+        List<Integer> allKeys = loadedTree.getAllKeys();
+
+        if (allKeys.size() < numberOfRecordsToRemove) {
+            System.out.println("O arquivo contém menos registros do que o número solicitado para remoção.");
+            return;
+        }
+
+        Collections.shuffle(allKeys);
+        List<Integer> keysToRemove = allKeys.subList(0, numberOfRecordsToRemove);
+
+
+        long memoryBeforeRemoval = MemoryUtil.measureMemoryInKB();
+        long startTime = System.nanoTime();
+
+        for (int key : keysToRemove) {
+            loadedTree.remove(key);
+            insertedKeys.remove(key);
+        }
+
+        long endTime = System.nanoTime();
+        long memoryAfterRemoval = MemoryUtil.measureMemoryInKB();
+        double durationInMs = (endTime - startTime) / 1_000_000.0;
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(loadedTree);
+            System.out.println(numberOfRecordsToRemove + " registros removidos aleatoriamente do arquivo " + file.getPath());
+        }
+
+        System.out.println("Memória antes da remoção: " + memoryBeforeRemoval + " KB");
+        System.out.println("Memória após a remoção: " + memoryAfterRemoval + " KB");
+        System.out.println("Consumo de memória durante a remoção: " + (memoryAfterRemoval - memoryBeforeRemoval) + " KB");
+        System.out.println("Tempo de execução da remoção: " + durationInMs + " ms");
+
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+
+
 }
