@@ -13,17 +13,22 @@ public class Main {
 
             while (true) {
                 System.out.println("\n--- Menu ---");
-                System.out.println("1. Inserir registro");
-                System.out.println("2. Buscar registro");
-                System.out.println("3. Atualizar registro");
-                System.out.println("4. Remover registro");
-                System.out.println("5. Exibir todos os registros");
-                System.out.println("6. Carregar dados de arquivo");
-                System.out.println("7. Salvar dados em arquivo");
-                System.out.println("8. Gerar registros automaticamente");
+                System.out.println("1. Inserir único registro");
+                System.out.println("2. Buscar único registro");
+                System.out.println("3. Atualizar único registro");
+                System.out.println("4. Remover único registro");
+                System.out.println("*********************************");
+                System.out.println("5. Consultar todos os registros");
+                System.out.println("6. Carregar dados de um arquivo");
+                System.out.println("7. Salvar dados em um arquivo");
+                System.out.println("8. Gerar registros antes de salvar o arquivo");
+                System.out.println("*********************************");
                 System.out.println("9. Remover registros automaticamente");
                 System.out.println("10. Atualizar registros automaticamente");
+                System.out.println("11. Inserir registros automaticamente");
+                System.out.println("*********************************");
                 System.out.println("0. Sair");
+                System.out.println("*********************************");
                 System.out.print("Escolha uma opção: ");
 
                 int option = scanner.nextInt();
@@ -111,20 +116,28 @@ public class Main {
                                 (memoryAfterGenerate - memoryBeforeGenerate) + " KB");
 
                         break;
-                    case 9: // Remover registros aleatórios de um arquivo
+                    case 9: // inserir registros aleatórios de um arquivo
+                        System.out.print("Digite o nome do arquivo para inserir os registros: ");
+                        String insertFilename = scanner.next();
+                        System.out.print("Digite o número de registros a serem inseridos aleatoriamente: ");
+                        int numberOfRecordsToInsert = scanner.nextInt();
+                        dbController.insertRandomRecordsFromFile(insertFilename, numberOfRecordsToInsert);
+                        break;
+
+                    case 10: // Atualizar registros aleatórios de um arquivo
+                        System.out.print("Digite o nome do arquivo para atualizar os registros: ");
+                        String updateFilename = scanner.next();
+                        System.out.print("Digite o número de registros a serem atualizados aleatoriamente: ");
+                        int numberOfRecordsToUpdate = scanner.nextInt();
+                        dbController.updateRandomRecordsFromFile(updateFilename, numberOfRecordsToUpdate);
+                        break;
+                    case 11: // remover registros aleatórios de um arquivo
                         System.out.print("Digite o nome do arquivo para remover os registros: ");
                         String removeFilename = scanner.next();
                         System.out.print("Digite o número de registros a serem removidos aleatoriamente: ");
                         int numberOfRecordsToRemove = scanner.nextInt();
                         dbController.removeRandomRecordsFromFile(removeFilename, numberOfRecordsToRemove);
                         break;
-                    case 10: // Atualizar registros aleatórios de um arquivo
-                    System.out.print("Digite o nome do arquivo para atualizar os registros: ");
-                    String updateFilename = scanner.next();
-                    System.out.print("Digite o número de registros a serem atualizados aleatoriamente: ");
-                    int numberOfRecordsToUpdate = scanner.nextInt();
-                    dbController.updateRandomRecordsFromFile(updateFilename, numberOfRecordsToUpdate);
-                    break;
                     case 0: // Sair
                         System.out.println("Saindo...");
                         System.exit(0);

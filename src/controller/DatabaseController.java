@@ -251,6 +251,45 @@ private int generateNewKey(int oldKey) {
     return newKey;
 }
 
+ // Método para inserir registros aleatórios de um arquivo
 
+public void insertRandomRecordsFromFile(String filename, int numberOfRecordsToInsert) {
+    File file = new File("files", filename);
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        BTree loadedTree = (BTree) ois.readObject();
 
+        // Medição de memória e tempo antes da inserção
+        long memoryBeforeInsert = MemoryUtil.measureMemoryInKB();
+        long startTime = System.nanoTime();
+
+        // Inserir registros aleatórios
+        Random random = new Random();
+        for (int i = 0; i < numberOfRecordsToInsert; i++) {
+            int key = random.nextInt(5000); // ou outro intervalo adequado
+            loadedTree.insert(key);
+            insertedKeys.add(key);
+        }
+
+        // Medição de memória e tempo após a inserção
+        long endTime = System.nanoTime();
+        long memoryAfterInsert = MemoryUtil.measureMemoryInKB();
+        double durationInMs = (endTime - startTime) / 1_000_000.0;
+
+        // Salva a árvore B de volta para o arquivo após a inserção
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(loadedTree);
+            System.out.println(numberOfRecordsToInsert + " registros inseridos aleatoriamente no arquivo " + file.getPath());
+        }
+
+        // Exibir informações de desempenho
+        System.out.println("Memória antes da inserção: " + memoryBeforeInsert + " KB");
+        System.out.println("Memória após a inserção: " + memoryAfterInsert + " KB");
+        System.out.println("Consumo de memória durante a inserção: " + (memoryAfterInsert - memoryBeforeInsert) + " KB");
+        System.out.println("Tempo de execução da inserção: " + durationInMs + " ms");
+
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+
+}
 }
