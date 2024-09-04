@@ -8,7 +8,6 @@ import controller.DatabaseController;
 
 public class DataGenerator {
     private Random random;
-    private Object insertedKeys;
 
     // Gerar um conjunto de chaves únicas dentro de um intervalo
     public Set<Integer> generateUniqueKeys(int numberOfRecords, int min, int max) {

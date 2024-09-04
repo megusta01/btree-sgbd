@@ -137,7 +137,7 @@ public class Main {
                         System.out.print("Digite o número de registros a serem removidos aleatoriamente: ");
                         int numberOfRecordsToRemove = scanner.nextInt();
                         dbController.removeRandomRecordsFromFile(removeFilename, numberOfRecordsToRemove);
-1                        break;
+                        break;
                     case 0: // Sair
                         System.out.println("Saindo...");
                         System.exit(0);
