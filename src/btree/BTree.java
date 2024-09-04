@@ -10,11 +10,9 @@ public class BTree implements Serializable {
     private int t;
 
     public BTree(int t) {
-        this.root = null;
         this.t = t;
     }
 
-    // Método para inserir uma nova chave na árvore
     public void insert(int key) {
         if (root == null) {
             root = new BTreeNode(t, true);
@@ -25,8 +23,7 @@ public class BTree implements Serializable {
                 BTreeNode newRoot = new BTreeNode(t, false);
                 newRoot.children[0] = root;
                 newRoot.splitChild(0, root);
-                int i = (newRoot.keys[0] < key) ? 1 : 0;
-                newRoot.children[i].insertNonFull(key);
+                newRoot.children[(newRoot.keys[0] < key) ? 1 : 0].insertNonFull(key);
                 root = newRoot;
             } else {
                 root.insertNonFull(key);
@@ -34,28 +31,19 @@ public class BTree implements Serializable {
         }
     }
 
-    // Método para remover uma chave da árvore
     public void remove(int key) {
         if (root == null) {
             System.out.println("A árvore está vazia");
             return;
         }
         root.remove(key);
-        if (root.numKeys == 0) {
-            if (root.isLeaf) {
-                root = null;
-            } else {
-                root = root.children[0];
-            }
-        }
+        if (root.numKeys == 0) root = root.isLeaf ? null : root.children[0];
     }
 
-    // Método para buscar uma chave na árvore
     public BTreeNode search(int key) {
-        return (root == null) ? null : root.search(key);
+        return root == null ? null : root.search(key);
     }
 
-    // Método para exibir a árvore B por níveis
     public void printTreeByLevels() {
         if (root == null) {
             System.out.println("Árvore está vazia.");
@@ -67,15 +55,12 @@ public class BTree implements Serializable {
 
         while (!queue.isEmpty()) {
             int levelSize = queue.size();
-            while (levelSize > 0) {
+            while (levelSize-- > 0) {
                 BTreeNode node = queue.poll();
                 System.out.print(node.keysToString() + " ");
                 for (int i = 0; i <= node.numKeys; i++) {
-                    if (node.children[i] != null) {
-                        queue.add(node.children[i]);
-                    }
+                    if (node.children[i] != null) queue.add(node.children[i]);
                 }
-                levelSize--;
             }
             System.out.println();
         }
