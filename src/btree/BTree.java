@@ -1,7 +1,9 @@
 package btree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class BTree implements Serializable {
@@ -65,4 +67,13 @@ public class BTree implements Serializable {
             System.out.println();
         }
     }
+
+    public List<Integer> getAllKeys() {
+    List<Integer> allKeys = new ArrayList<>();
+    if (root != null) {
+        root.collectKeys(allKeys);
+    }
+    return allKeys;
+}
+
 }

@@ -6,6 +6,13 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "App.Main",
+            "projectName": "btree-sgbd-1_9d3c0a1e"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "App.Main",
             "projectName": "btree-sgbd_5d66f002"
         },
         {

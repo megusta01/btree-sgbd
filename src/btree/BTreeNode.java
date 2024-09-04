@@ -2,6 +2,7 @@ package btree;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 public class BTreeNode implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -158,4 +159,16 @@ public class BTreeNode implements Serializable {
     public String keysToString() {
         return Arrays.toString(Arrays.copyOf(keys, numKeys));
     }
+    public void collectKeys(List<Integer> allKeys) {
+    for (int i = 0; i < numKeys; i++) {
+        if (!isLeaf) {
+            children[i].collectKeys(allKeys);
+        }
+        allKeys.add(keys[i]);
+    }
+    if (!isLeaf) {
+        children[numKeys].collectKeys(allKeys);
+    }
+}
+
 }
